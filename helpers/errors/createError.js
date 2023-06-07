@@ -1,5 +1,6 @@
 class statusCode {
   static messages = {
+
     400: "Bad Request",
     401: "Unauthorized",
     403: "Forbidden",
@@ -14,4 +15,4 @@ class statusCode {
   }
 }
 
-module.exports = statusCode;
+module.exports = { createError };
