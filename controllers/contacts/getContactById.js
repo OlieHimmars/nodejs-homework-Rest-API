@@ -1,17 +1,14 @@
-const { createError } = require("../../helpers");
 const { Contact } = require("../../models/contactSchema");
 
+const { httpError } = require("../../helpers");
+
 const getContactById = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const contact = await Contact.findById(contactId);
-    if (!contact) {
-      throw createError(404);
-    }
-    res.json(contact);
-  } catch (error) {
-    next(error);
+  const { contactId } = req.params;
+  const result = await Contact.findById(contactId);
+  if (!result) {
+    throw httpError(404, "Not found");
   }
+  res.json(result);
 };
 
 module.exports = getContactById;

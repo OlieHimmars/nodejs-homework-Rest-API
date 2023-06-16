@@ -1,15 +1,39 @@
 const express = require("express");
+const controllers = require("../../controllers/users");
+
+const { controllerWrapper } = require("../../helpers");
+const { validateBody, authenticate, upload } = require("../../middleware");
+const { schemas } = require("../../models/userSchema");
 const router = express.Router();
-const { authenticate } = require("../../helpers");
 
-const { signup, login, getCurrent, logout } = require("../../controllers");
+router.post(
+  "/signup",
+  validateBody(schemas.registerSchema),
+  controllerWrapper(controllers.register)
+);
 
-router.post("/users/signup", signup);
+router.post(
+  "/login",
+  validateBody(schemas.loginSchema),
+  controllerWrapper(controllers.login)
+);
 
-router.post("/users/login", login);
+router.get("/current", authenticate, controllerWrapper(controllers.current));
 
-router.get("/users/current", authenticate, getCurrent);
+router.get("/logout", authenticate, controllerWrapper(controllers.logOut));
 
-router.post("/users/logout", authenticate, logout);
+router.patch(
+  "/users/:id/subscription",
+  authenticate,
+  validateBody(schemas.subscriptionSchema),
+  controllerWrapper(controllers.subscription)
+);
+
+router.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatar"),
+  controllerWrapper(controllers.updateAvatar)
+);
 
 module.exports = router;
