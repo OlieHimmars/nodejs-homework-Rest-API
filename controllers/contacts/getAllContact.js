@@ -1,18 +1,32 @@
 const { Contact } = require("../../models/contactSchema");
 
-const getAllContact = async (req, res, next) => {
-  try {
-    const { _id: owner } = req.user;
-    const { page = 1, limit = 20 } = req.query;
-    const skip = (page - 1) * limit;
+const listContacts = async (req, res) => {
+  const { _id: owner } = req.user;
+
+  const { page = 1, limit = 5 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const { favorite } = req.query;
+
+  if (favorite !== undefined) {
+    const result = await Contact.find(
+      { owner, favorite },
+      "-createdAt -updatedAt",
+      {
+        skip,
+        limit,
+      }
+    ).populate("owner", "name email");
+
+    res.json(result);
+  } else {
     const result = await Contact.find({ owner }, "-createdAt -updatedAt", {
       skip,
-      limit: Number(limit),
-    }).populate("owner", "email name");
+      limit,
+    }).populate("owner", "name email");
+
     res.json(result);
-  } catch (error) {
-    next(error);
   }
 };
 
-module.exports = getAllContact;
+module.exports = listContacts;

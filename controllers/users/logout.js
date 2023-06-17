@@ -1,13 +1,23 @@
 const { User } = require("../../models/userSchema");
 
-const logout = async (req, res, next) => {
-  try {
-    const { _id } = req.user;
-    await User.findByIdAndUpdate(_id, { token: "" });
-    res.status(204).json();
-  } catch (error) {
-    next(error);
+const { httpError } = require("../../helpers");
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw httpError(401, "Not authorized");
   }
+
+  await User.findByIdAndUpdate(_id, { token: null });
+
+  res.status(204).json({
+    message: "Logout success",
+  });
 };
 
 module.exports = logout;

@@ -1,17 +1,17 @@
-const { createError } = require("../../helpers");
 const { Contact } = require("../../models/contactSchema");
 
-const removeContact = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    const result = await Contact.findByIdAndRemove(contactId);
-    if (!result) {
-      throw createError(404);
-    }
-    res.json({ message: "Contact deleted" });
-  } catch (error) {
-    next(error);
+const { httpError } = require("../../helpers");
+
+const deleteContact = async (req, res, next) => {
+  const { contactId } = req.params;
+  const result = await Contact.findByIdAndRemove(contactId);
+  if (!result) {
+    throw httpError(404, "Not found");
   }
+
+  res.json({
+    message: "contact deleted",
+  });
 };
 
-module.exports = removeContact;
+module.exports = deleteContact;

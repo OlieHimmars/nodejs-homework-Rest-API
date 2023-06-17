@@ -1,25 +1,14 @@
-const { Contact } = require("../../models/contactSchema");
+const { User } = require("../../models/userSchema");
 
-const getAllContact = async (req, res, next) => {
-  try {
-    const { _id: owner } = req.user;
-    const { page = 1, limit = 20, favorite } = req.query;
-    const skip = (page - 1) * limit;
-    const filter = { owner };
-    
-    if (favorite) {
-      filter.favorite = favorite === "true";
-    }
+const getCurrent = async (req, res) => {
+  const { email } = req.user;
 
-    const result = await Contact.find(filter, "-createdAt -updatedAt", {
-      skip,
-      limit: Number(limit),
-    }).populate("owner", "email name");
+  const user = await User.findOne({ email });
 
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
+  res.json({
+    email,
+    subscription: user.subscription,
+  });
 };
 
-module.exports = getAllContact;
+module.exports = getCurrent;
