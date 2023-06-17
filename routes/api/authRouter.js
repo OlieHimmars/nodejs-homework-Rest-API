@@ -18,6 +18,8 @@ router.post(
   controllerWrapper(controllers.login)
 );
 
+router.get("/verify/:verificationToken", controllerWrapper(controllers.verify));
+
 router.get("/current", authenticate, controllerWrapper(controllers.current));
 
 router.get("/logout", authenticate, controllerWrapper(controllers.logOut));
@@ -35,5 +37,8 @@ router.patch(
   upload.single("avatar"),
   controllerWrapper(controllers.updateAvatar)
 );
+
+router.post("/users/verify",
+validateBody(schemas.subscriptionSchema), controllerWrapper(controllers.resendEmail));
 
 module.exports = router;
