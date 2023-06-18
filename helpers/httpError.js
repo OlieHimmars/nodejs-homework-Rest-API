@@ -1,7 +1,7 @@
-const createError = (statusCode, message) => {
+const httpError = (statusCode, message) => {
   const error = new Error(message);
   error.statusCode = statusCode;
   return error;
 };
 
-module.exports = { createError };
+module.exports = httpError;

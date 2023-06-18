@@ -8,7 +8,7 @@ const listContacts = async (req, res) => {
 
   const { favorite } = req.query;
 
-  if (favorite !== undefined) {
+  if (favorite != undefined) {
     const result = await Contact.find(
       { owner, favorite },
       "-createdAt -updatedAt",
